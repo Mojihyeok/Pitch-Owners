@@ -1,0 +1,261 @@
+<!-- PITCH OWNERS 진입 시연 데모: 전북현대 헤더 재현 → PITCH OWNERS 탭 클릭 → 잔디 랜딩 전환 -->
+<div id="po-demo-root">
+  <style>
+    #po-demo-root *{margin:0;padding:0;box-sizing:border-box;font-family:'Pretendard',-apple-system,system-ui,'Malgun Gothic',sans-serif;}
+    #po-demo-root{
+      --jb-green:#0B5D3B; --jb-green-d:#063D27;
+      --po-base:#0A0B0A; --po-surface:#121512; --po-elevated:#1B201B;
+      --po-turf:#0B5D3B; --po-turf-light:#3FD489; --po-accent:#C8F02C;
+      --ink-high:#F4F6F4; --ink-mid:#A8B0A8; --ink-low:#6B736B;
+      width:100%;
+    }
+
+    /* ===== VIEW SWITCH ===== */
+    #po-demo-root .view{display:none;}
+    #po-demo-root .view.active{display:block;animation:fade .45s ease;}
+    @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+    /* ============ 1) 전북현대 사이트 (화이트 테마) ============ */
+    #po-demo-root .jb-site{background:#fff;color:#1a1a1a;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;}
+    /* 유틸바 */
+    #po-demo-root .jb-util{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid #f0f0f0;flex-wrap:wrap;gap:10px;}
+    #po-demo-root .jb-util-left,#po-demo-root .jb-util-right{display:flex;align-items:center;gap:20px;}
+    #po-demo-root .jb-util a{font-size:13px;color:#444;text-decoration:none;font-weight:500;white-space:nowrap;}
+    #po-demo-root .jb-util a:hover{color:var(--jb-green);}
+    #po-demo-root .jb-logo{text-align:center;line-height:1;}
+    #po-demo-root .jb-logo .l1{font-family:'Archivo','Arial Black',sans-serif;font-weight:800;font-size:24px;letter-spacing:2px;color:var(--jb-green);}
+    #po-demo-root .jb-logo .l2{font-size:10px;letter-spacing:3px;color:var(--jb-green);font-weight:600;margin-top:2px;}
+    /* 네비바 */
+    #po-demo-root .jb-nav{display:flex;align-items:center;gap:6px;padding:0 24px;border-bottom:1px solid #eee;overflow-x:auto;}
+    #po-demo-root .jb-burger{padding:18px 16px 18px 4px;color:#333;display:flex;align-items:center;}
+    #po-demo-root .jb-nav-item{position:relative;padding:20px 18px;font-size:15px;font-weight:700;color:#555;text-decoration:none;white-space:nowrap;letter-spacing:.5px;cursor:pointer;border:none;background:none;}
+    #po-demo-root .jb-nav-item:hover{color:var(--jb-green);}
+    #po-demo-root .jb-nav-item.active{background:var(--jb-green);color:#fff;}
+    /* PITCH OWNERS 강조 탭 */
+    #po-demo-root .jb-nav-po{color:var(--jb-green);}
+    #po-demo-root .jb-nav-po:hover{color:var(--jb-green-d);}
+    #po-demo-root .jb-nav-po .sprout{display:inline-block;margin-right:5px;vertical-align:-2px;}
+    #po-demo-root .jb-nav-po .newbadge{position:absolute;top:8px;right:2px;background:var(--po-accent);color:#0a0b0a;font-size:8px;font-weight:800;padding:1px 5px;border-radius:6px;letter-spacing:.5px;}
+    #po-demo-root .jb-nav-po::after{content:"";position:absolute;left:14px;right:14px;bottom:12px;height:2px;background:var(--jb-green);transform:scaleX(0);transition:transform .25s;transform-origin:left;}
+    #po-demo-root .jb-nav-po:hover::after{transform:scaleX(1);}
+    /* 히어로(더미) */
+    #po-demo-root .jb-hero{position:relative;height:300px;background:linear-gradient(135deg,#1e3a5f 0%,#0f2238 60%,#0a1828 100%);display:flex;align-items:flex-end;padding:36px;overflow:hidden;}
+    #po-demo-root .jb-hero::before{content:"2026 KCCI · Forbes CSR Award";position:absolute;top:30px;left:40px;font-family:'Archivo',sans-serif;font-weight:800;font-size:64px;color:rgba(255,255,255,.07);letter-spacing:-2px;white-space:nowrap;}
+    #po-demo-root .jb-hero-inner{position:relative;z-index:2;}
+    #po-demo-root .jb-chip{display:inline-block;border:1.5px solid #fff;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;margin-bottom:16px;letter-spacing:1px;}
+    #po-demo-root .jb-hero h2{color:#fff;font-size:30px;font-weight:800;line-height:1.25;margin-bottom:20px;max-width:80%;}
+    #po-demo-root .jb-hero-btn{display:inline-flex;align-items:center;gap:8px;background:var(--jb-green);color:#fff;border:none;padding:13px 26px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;}
+
+    #po-demo-root .demo-hint{text-align:center;font-size:13px;color:var(--ink-low);padding:14px;}
+    #po-demo-root .demo-hint b{color:var(--po-accent);}
+
+    /* ============ 2) PITCH OWNERS 랜딩 (다크 테마) ============ */
+    #po-demo-root .po-land{background:var(--po-base);color:var(--ink-high);border-radius:10px;overflow:hidden;border:1px solid #1f231f;}
+    #po-demo-root .po-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1c211c;position:sticky;top:0;background:rgba(10,11,10,.85);backdrop-filter:blur(8px);z-index:10;}
+    #po-demo-root .po-wordmark{font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;letter-spacing:1px;color:var(--ink-high);}
+    #po-demo-root .po-wordmark .dot{color:var(--po-accent);}
+    #po-demo-root .po-topbar .po-sub{font-size:10px;color:var(--ink-low);margin-top:2px;letter-spacing:.5px;}
+    #po-demo-root .po-back{background:none;border:1px solid #2a302a;color:var(--ink-mid);font-size:12px;padding:7px 12px;border-radius:8px;cursor:pointer;}
+    #po-demo-root .po-back:hover{border-color:var(--po-turf-light);color:var(--po-turf-light);}
+
+    /* hero */
+    #po-demo-root .po-hero{position:relative;padding:56px 26px 64px;text-align:center;overflow:hidden;}
+    #po-demo-root .po-hero .turf-bg{position:absolute;inset:0;background:
+      radial-gradient(120% 80% at 50% 120%, rgba(31,168,98,.35), transparent 60%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0 18px, transparent 18px 36px),
+      linear-gradient(180deg,#0a0b0a,#0c130c);}
+    #po-demo-root .po-hero-inner{position:relative;z-index:2;}
+    #po-demo-root .po-eyebrow{display:inline-block;font-size:11px;letter-spacing:2px;color:var(--po-accent);font-weight:700;margin-bottom:18px;border:1px solid rgba(200,240,44,.3);padding:5px 12px;border-radius:999px;}
+    #po-demo-root .po-hero h1{font-size:30px;font-weight:800;line-height:1.3;letter-spacing:-.5px;margin-bottom:18px;}
+    #po-demo-root .po-hero h1 .hl{color:var(--po-accent);}
+    #po-demo-root .po-hero p{font-size:14px;color:var(--ink-mid);line-height:1.65;max-width:340px;margin:0 auto 28px;}
+    #po-demo-root .po-cta{display:inline-flex;align-items:center;gap:8px;background:var(--po-accent);color:#0a0b0a;border:none;padding:15px 30px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(200,240,44,.25);}
+    #po-demo-root .po-cta:hover{background:#d4ff3d;}
+    #po-demo-root .po-cta2{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink-mid);font-size:13px;text-decoration:underline;cursor:pointer;}
+
+    /* stat strip */
+    #po-demo-root .po-stats{display:flex;gap:10px;padding:24px 20px;background:var(--po-surface);}
+    #po-demo-root .po-stat{flex:1;text-align:center;padding:14px 6px;background:var(--po-elevated);border-radius:14px;}
+    #po-demo-root .po-stat .num{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;color:var(--po-accent);line-height:1;}
+    #po-demo-root .po-stat .lbl{font-size:10px;color:var(--ink-mid);margin-top:7px;line-height:1.35;}
+
+    /* steps */
+    #po-demo-root .po-sec{padding:30px 22px;}
+    #po-demo-root .po-sec h3{font-size:13px;letter-spacing:1px;color:var(--po-turf-light);font-weight:700;margin-bottom:6px;}
+    #po-demo-root .po-sec .sec-t{font-size:20px;font-weight:800;margin-bottom:20px;line-height:1.3;}
+    #po-demo-root .po-step{display:flex;gap:14px;align-items:flex-start;padding:16px;background:var(--po-surface);border-radius:14px;margin-bottom:12px;}
+    #po-demo-root .po-step .ic{flex-shrink:0;width:40px;height:40px;border-radius:11px;background:rgba(31,168,98,.15);display:flex;align-items:center;justify-content:center;font-size:20px;}
+    #po-demo-root .po-step .st-t{font-size:15px;font-weight:700;margin-bottom:3px;}
+    #po-demo-root .po-step .st-d{font-size:12.5px;color:var(--ink-mid);line-height:1.55;}
+
+    /* zone preview */
+    #po-demo-root .po-zone{padding:28px 22px;background:var(--po-surface);}
+    #po-demo-root .pitch{position:relative;aspect-ratio:105/68;background:linear-gradient(180deg,#0d4d2f,#0a3d25);border-radius:12px;border:2px solid rgba(255,255,255,.15);overflow:hidden;margin-bottom:16px;display:grid;grid-template-columns:repeat(14,1fr);grid-template-rows:repeat(9,1fr);gap:2px;padding:8px;}
+    #po-demo-root .pitch .cell{border-radius:2px;background:rgba(255,255,255,.04);}
+    #po-demo-root .pitch .cell.sig{background:rgba(200,240,44,.55);}
+    #po-demo-root .pitch .cell.dyn{background:rgba(31,168,98,.5);}
+    #po-demo-root .pitch::after{content:"";position:absolute;left:50%;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.2);transform:translateX(-50%);}
+    #po-demo-root .pitch::before{content:"";position:absolute;left:50%;top:50%;width:60px;height:60px;border:2px solid rgba(255,255,255,.2);border-radius:50%;transform:translate(-50%,-50%);}
+    #po-demo-root .zone-legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+    #po-demo-root .zone-legend span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-mid);}
+    #po-demo-root .zone-legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+
+    /* trust + final */
+    #po-demo-root .po-trust{padding:26px 22px;text-align:center;}
+    #po-demo-root .po-trust .fund{display:flex;gap:10px;margin-bottom:16px;}
+    #po-demo-root .po-trust .fund div{flex:1;background:var(--po-surface);border-radius:12px;padding:16px 8px;}
+    #po-demo-root .po-trust .fund .p{font-family:'Archivo',sans-serif;font-weight:800;font-size:22px;color:var(--po-turf-light);}
+    #po-demo-root .po-trust .fund .t{font-size:10.5px;color:var(--ink-mid);margin-top:5px;}
+    #po-demo-root .po-notice{font-size:11px;color:var(--ink-low);line-height:1.6;background:var(--po-elevated);padding:12px 14px;border-radius:10px;}
+    #po-demo-root .po-final{padding:40px 22px;text-align:center;background:linear-gradient(180deg,#0a0b0a,#0c130c);}
+    #po-demo-root .po-final h2{font-size:23px;font-weight:800;margin-bottom:22px;line-height:1.35;}
+    #po-demo-root .po-footer{padding:22px;text-align:center;border-top:1px solid #1c211c;font-size:11px;color:var(--ink-low);}
+    #po-demo-root .po-footer b{color:var(--ink-mid);}
+
+    @media(min-width:600px){
+      #po-demo-root .jb-hero h2{font-size:34px;}
+      #po-demo-root .po-hero h1{font-size:36px;}
+    }
+  </style>
+
+  <!-- ========================= VIEW 1: 전북현대 사이트 ========================= -->
+  <div class="view active" id="view-jb">
+    <div class="jb-site">
+      <!-- 유틸바 -->
+      <div class="jb-util">
+        <div class="jb-util-left">
+          <a href="#">전북현대</a><a href="#">그린스쿨</a><a href="#">후원의집</a>
+          <a href="#">오피셜 스토어</a><a href="#">인권침해 접수처</a>
+        </div>
+        <div class="jb-logo">
+          <div class="l1">JEONBUK</div>
+          <div class="l2">HYUNDAI MOTORS</div>
+        </div>
+        <div class="jb-util-right">
+          <a href="#">티켓예매</a><a href="#">로그인</a><a href="#">통합 회원가입</a>
+        </div>
+      </div>
+      <!-- 네비바 -->
+      <div class="jb-nav">
+        <span class="jb-burger">☰</span>
+        <button class="jb-nav-item active">CLUB</button>
+        <button class="jb-nav-item">TEAM</button>
+        <button class="jb-nav-item">MATCH</button>
+        <button class="jb-nav-item">TICKET</button>
+        <button class="jb-nav-item">HISTORY</button>
+        <button class="jb-nav-item">RECORD</button>
+        <button class="jb-nav-item">MEDIA</button>
+        <!-- ★ FAN ZONE 바로 왼쪽: PITCH OWNERS 진입 탭 -->
+        <button class="jb-nav-item jb-nav-po" id="po-enter">
+          <span class="sprout">🌱</span>PITCH OWNERS
+          <span class="newbadge">NEW</span>
+        </button>
+        <button class="jb-nav-item">FAN ZONE</button>
+      </div>
+      <!-- 히어로 더미 -->
+      <div class="jb-hero">
+        <div class="jb-hero-inner">
+          <span class="jb-chip">NEWS</span>
+          <h2>전북현대, '제17회 대한상공회의소·포브스 사회공헌대상' 수상</h2>
+          <button class="jb-hero-btn">▷ 기사보기</button>
+        </div>
+      </div>
+    </div>
+    <p class="demo-hint">상단 네비게이션에서 <b>🌱 PITCH OWNERS</b> 탭을 클릭해보세요 → 잔디 입양 페이지로 진입합니다</p>
+  </div>
+
+  <!-- ========================= VIEW 2: PITCH OWNERS 랜딩 ========================= -->
+  <div class="view" id="view-po">
+    <div class="po-land">
+      <!-- 미니 헤더 -->
+      <div class="po-topbar">
+        <div>
+          <div class="po-wordmark">PITCH<span class="dot">·</span>OWNERS</div>
+          <div class="po-sub">Official Partner · 전북현대모터스FC</div>
+        </div>
+        <button class="po-back" id="po-back">← 전북현대로</button>
+      </div>
+
+      <!-- S1 히어로 -->
+      <div class="po-hero">
+        <div class="turf-bg"></div>
+        <div class="po-hero-inner">
+          <span class="po-eyebrow">GREEN TURF FUNDING</span>
+          <h1>잔디 한 평을 가진 사람이<br><span class="hl">K리그의 진짜 주인</span>이다.</h1>
+          <p>전북현대 그라운드의 잔디를 입양하고, 매 경기 당신의 격자에서 일어나는 모든 순간을 소유하세요.</p>
+          <button class="po-cta">내 격자 찾기 →</button>
+          <button class="po-cta2">어떻게 작동하나요?</button>
+        </div>
+      </div>
+
+      <!-- S2 문제 -->
+      <div class="po-stats">
+        <div class="po-stat"><div class="num">33배</div><div class="lbl">서울월드컵<br>잔디비 vs 대관수익 격차</div></div>
+        <div class="po-stat"><div class="num">1~2억</div><div class="lbl">한국 잔디 관리비<br>(EPL 6.9~8.6억)</div></div>
+        <div class="po-stat"><div class="num">442</div><div class="lbl">팬이 입양 가능한<br>16㎡ 격자 수</div></div>
+      </div>
+
+      <!-- S3 작동 방식 -->
+      <div class="po-sec">
+        <h3>HOW IT WORKS</h3>
+        <div class="sec-t">4단계로 K리그의 주인이 됩니다</div>
+        <div class="po-step"><div class="ic">🗺️</div><div><div class="st-t">1. 격자 입양</div><div class="st-d">442개 격자 중 내 자리를 고른다. 16㎡, 격자당 최대 4인 쿼터제로 독점을 방지합니다.</div></div></div>
+        <div class="po-step"><div class="ic">💳</div><div><div class="st-t">2. NFC 라이센스 카드</div><div class="st-d">실물 카드를 받아 매치데이에 태깅, 나의 격자 페이지를 인증합니다.</div></div></div>
+        <div class="po-step"><div class="ic">⚡</div><div><div class="st-t">3. 매치데이 퀘스트</div><div class="st-d">내 격자에서 골·세이브 등 9종 데이터 이벤트가 일어나면 뱃지와 리워드가 자동 적립됩니다.</div></div></div>
+        <div class="po-step"><div class="ic">🌱</div><div><div class="st-t">4. Green Turf Fund</div><div class="st-d">모든 재원은 잔디 관리에만 쓰입니다. 사용처는 투명하게 공개됩니다.</div></div></div>
+      </div>
+
+      <!-- S5 Zone -->
+      <div class="po-zone">
+        <h3 style="color:var(--po-turf-light);font-size:13px;letter-spacing:1px;font-weight:700;margin-bottom:14px;">CHOOSE YOUR ZONE</h3>
+        <div class="pitch">
+          <!-- 시그니처(골문앞) / 다이내믹 / 베이직 시각화 -->
+          <div class="cell sig"></div><div class="cell sig"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell sig"></div><div class="cell sig"></div>
+          <div class="cell sig"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell sig"></div>
+          <div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div><div class="cell"></div><div class="cell dyn"></div><div class="cell"></div>
+        </div>
+        <div class="zone-legend">
+          <span><i style="background:#C8F02C;"></i>Signature (6~40만원)</span>
+          <span><i style="background:#1FA862;"></i>Dynamic</span>
+          <span><i style="background:rgba(255,255,255,.15);"></i>Basic</span>
+        </div>
+      </div>
+
+      <!-- S6 신뢰 -->
+      <div class="po-trust">
+        <div class="fund">
+          <div><div class="p">90%</div><div class="t">B2C 매출<br>Green Turf Fund 환원</div></div>
+          <div><div class="p">100%</div><div class="t">B2B 명명권 매출<br>전액 환원</div></div>
+          <div><div class="p">감사</div><div class="t">외부 회계법인<br>분기 투명성 리포트</div></div>
+        </div>
+        <div class="po-notice">※ 격자 입양은 부동산·소유권 등록이 아닌 <b style="color:var(--ink-mid)">후원·기부의 게이미피케이션</b>입니다. 모든 재원은 잔디 관리 기금으로 환원됩니다.</div>
+      </div>
+
+      <!-- S7 최종 CTA -->
+      <div class="po-final">
+        <h2>지금, 당신의 잔디를<br>입양하세요.</h2>
+        <button class="po-cta">내 격자 입양하기 →</button>
+      </div>
+      <div class="po-footer">
+        <b>PITCH OWNERS</b> · Official Partner of 전북현대모터스FC<br>
+        이용약관 · 개인정보처리방침 · 문의
+      </div>
+    </div>
+    <p class="demo-hint">실제 구현 시 <b>내 격자 찾기</b> 버튼은 <b>/ground</b>(그라운드 맵)로 연결됩니다</p>
+  </div>
+
+  <script>
+    (function(){
+      var root=document.getElementById('po-demo-root');
+      var vJb=root.querySelector('#view-jb');
+      var vPo=root.querySelector('#view-po');
+      function show(el){vJb.classList.remove('active');vPo.classList.remove('active');el.classList.add('active');root.scrollIntoView({behavior:'smooth',block:'start'});}
+      root.querySelector('#po-enter').addEventListener('click',function(){show(vPo);});
+      root.querySelector('#po-back').addEventListener('click',function(){show(vJb);});
+      // 랜딩의 격자 찾기 CTA → 실제 앱에서 /ground. 데모에선 안내만.
+      root.querySelectorAll('.po-cta').forEach(function(b){
+        b.addEventListener('click',function(){ if(window.sendPrompt){window.sendPrompt('그라운드 맵(/ground) 화면을 다음으로 만들어줘');} });
+      });
+    })();
+  </script>
+</div>

@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/*
+ * PITCH OWNERS — 디자인 토큰 (Tailwind v4 @theme)
+ * 레퍼런스: 전북현대 모바일 — 다크 전면 + 딥그린 브랜드 + 형광 옐로우 액센트.
+ * 색/radius/shadow/spacing 은 전부 여기 토큰으로만. 하드코딩 금지.
+ */
+@theme {
+  /* 배경 계열 (다크) */
+  --color-bg-base: #0a0b0a; /* 최하단 배경 (거의 블랙, 살짝 그린 기운) */
+  --color-bg-surface: #121512; /* 카드 기본 표면 */
+  --color-bg-elevated: #1b201b; /* 떠있는 카드/모달 */
+  --color-bg-hover: #232a23;
+
+  /* 브랜드 그린 (전북 딥그린 → 잔디 컨셉) */
+  --color-turf-900: #063d27;
+  --color-turf-700: #0b5d3b; /* 메인 브랜드 그린 (CTA 보조, 섹션 배경) */
+  --color-turf-500: #12834f;
+  --color-turf-400: #1fa862;
+  --color-turf-300: #3fd489; /* 밝은 그린 (활성 상태, 진행률) */
+
+  /* 액센트 옐로우 (카운트다운, 핵심 CTA, 뱃지 활성) */
+  --color-accent: #c8f02c;
+  --color-accent-hover: #d4ff3d;
+  --color-accent-dim: #9bbf1e;
+
+  /* 텍스트 */
+  --color-ink-high: #f4f6f4; /* 주요 텍스트 */
+  --color-ink-mid: #a8b0a8; /* 보조 텍스트 */
+  --color-ink-low: #6b736b; /* 비활성/캡션 */
+  --color-ink-invert: #0a0b0a; /* 옐로우/밝은 배경 위 텍스트 */
+
+  /* Zone 구분 색 (그라운드 맵) */
+  --color-zone-signature: #c8f02c; /* 시그니처 존 = 옐로우 */
+  --color-zone-dynamic: #1fa862; /* 다이내믹 존 = 그린 */
+  --color-zone-basic: #3a463a; /* 베이직 존 = 뉴트럴 그린그레이 */
+
+  /* 상태 */
+  --color-state-danger: #e5484d;
+  --color-state-warn: #f5a623;
+  --color-state-success: #3fd489;
+
+  /* Radius */
+  --radius-card: 16px;
+  --radius-pill: 999px;
+  --radius-btn: 12px;
+
+  /* Shadow */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 24px rgba(200, 240, 44, 0.25); /* 옐로우 글로우 */
+
+  /* Fonts */
+  --font-sans: "Pretendard", "Pretendard Variable", system-ui, sans-serif;
+  --font-display: var(--font-archivo), "Archivo", sans-serif; /* 숫자/영문 헤드라인 */
+}
+
+/* 글로벌 기본: 다크 배경 + 기본 텍스트 */
+html {
+  background-color: var(--color-bg-base);
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-ink-high);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
