@@ -3,6 +3,7 @@
 import { Sparkles } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { formatManwon } from "@/lib/utils";
+import { maxOf, priceOf } from "@/lib/zonePolicy";
 import { zoneLabel, type Grid } from "@/mocks/grids";
 
 interface RecommendSliderProps {
@@ -33,10 +34,10 @@ export function RecommendSlider({ grids, onSelect }: RecommendSliderProps) {
             </span>
             <span className="text-xs text-ink-mid">{zoneLabel(g.zone)}</span>
             <span className="mt-1 text-sm font-semibold text-ink-high">
-              {formatManwon(g.priceKRW)}원~
+              {formatManwon(priceOf(g.zone))}원
             </span>
             <span className="text-xs text-ink-low">
-              잔여 {g.slotsTotal - g.slotsTaken}자리
+              잔여 {Math.max(0, maxOf(g.zone) - g.slotsTaken)}자리
             </span>
           </button>
         ))}

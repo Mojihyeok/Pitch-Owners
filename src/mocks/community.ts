@@ -9,7 +9,7 @@ export interface OwnerProfile {
   isMe?: boolean;
 }
 
-// 동일 격자 4인 오너.
+// 동일 격자 공동 오너 (데모: 그룹 예시).
 export const GRID_OWNERS: OwnerProfile[] = [
   { id: "o-1", nickname: "초록불꽃", avatar: "🦊", badges: 12, attendance: 92, isMe: true },
   { id: "o-2", nickname: "잔디지기", avatar: "🐯", badges: 8, attendance: 78 },

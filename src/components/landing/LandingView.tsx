@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { CountUp } from "./CountUp";
 import { ZonePreviewMini } from "./ZonePreviewMini";
+import { maxOf, priceOf } from "@/lib/zonePolicy";
+import { formatManwon } from "@/lib/utils";
 
 // 스크롤 진입 페이드/슬라이드 래퍼.
 function Reveal({
@@ -44,7 +46,7 @@ const STEPS = [
   {
     icon: LayoutGrid,
     title: "격자 입양",
-    desc: "442개 격자 중 내 자리를 고른다 (16㎡, 4인 쿼터제).",
+    desc: "442개 격자 중 내 자리를 고른다 (16㎡, 개인 또는 2~6인 그룹).",
   },
   {
     icon: CreditCard,
@@ -65,7 +67,7 @@ const STEPS = [
 
 const VALUES = [
   { icon: Trophy, title: "데이터-자산 연동", desc: "경기 데이터가 곧 내 자산의 가치." },
-  { icon: Users, title: "4인 쿼터제", desc: "독점 방지, 더 많은 팬이 명장면 공유." },
+  { icon: Users, title: "그룹 쿼터제", desc: "최대 6인, 독점 방지·명장면 공유." },
   { icon: Repeat, title: "재원 폐쇄 순환", desc: "모든 후원금이 잔디로 되돌아온다." },
   { icon: Heart, title: "내 잔디 서사", desc: "내 잔디에서 골이 났다는 평생의 이야기." },
 ];
@@ -262,20 +264,25 @@ export function LandingView() {
           <ZonePreviewMini />
         </Reveal>
         <Reveal delay={0.12}>
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-mid">
-            <span className="flex items-center gap-1">
+          <div className="mt-3 flex flex-col gap-1 text-xs text-ink-mid">
+            <span className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-signature" /> 시그니처
+              · {maxOf("signature")}명 · {formatManwon(priceOf("signature"))}원
             </span>
-            <span className="flex items-center gap-1">
-              <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-dynamic" /> 다이내믹
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-dynamic" /> 다이내믹 ·{" "}
+              {maxOf("dynamic")}명 · {formatManwon(priceOf("dynamic"))}원
             </span>
-            <span className="flex items-center gap-1">
-              <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-basic" /> 베이직
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-basic" /> 베이직 ·{" "}
+              {maxOf("basic")}명 · {formatManwon(priceOf("basic"))}원
             </span>
           </div>
           <p className="mt-2 text-sm text-ink-mid">
-            가격대 <span className="font-semibold text-ink-high">6만 ~ 40만원</span>{" "}
-            / 반기
+            반기{" "}
+            <span className="font-semibold text-ink-high">
+              {formatManwon(priceOf("basic"))} ~ {formatManwon(priceOf("signature"))}원
+            </span>
           </p>
           <Link
             href="/ground"

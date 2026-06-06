@@ -15,6 +15,8 @@ import { ZoneFilter, type ZoneFilterValue } from "./ZoneFilter";
 import { GridPreviewSheet } from "./GridPreviewSheet";
 import { RecommendSlider } from "./RecommendSlider";
 import { Card } from "@/components/ui/Card";
+import { maxOf, priceOf } from "@/lib/zonePolicy";
+import { formatManwon } from "@/lib/utils";
 
 export function GroundView() {
   const isOwner = useUserStore((s) => s.isOwner);
@@ -95,18 +97,21 @@ export function GroundView() {
         onSelect={setSelected}
       />
 
-      {/* 범례 */}
-      <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 text-xs text-ink-mid">
-        <span className="flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-signature" /> 시그니처
+      {/* 범례 (Zone별 정원·가격) */}
+      <div className="flex flex-col gap-1 px-1 text-xs text-ink-mid">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-signature" /> 시그니처 ·{" "}
+          {maxOf("signature")}명 · {formatManwon(priceOf("signature"))}원
         </span>
-        <span className="flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-dynamic" /> 다이내믹
+        <span className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-dynamic" /> 다이내믹 ·{" "}
+          {maxOf("dynamic")}명 · {formatManwon(priceOf("dynamic"))}원
         </span>
-        <span className="flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-basic" /> 베이직
+        <span className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-zone-basic" /> 베이직 ·{" "}
+          {maxOf("basic")}명 · {formatManwon(priceOf("basic"))}원
         </span>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-[2px] border border-accent" /> 내 격자
         </span>
       </div>

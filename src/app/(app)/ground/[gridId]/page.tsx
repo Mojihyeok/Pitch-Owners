@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { formatKRW } from "@/lib/utils";
-import { getGridById, zoneLabel, type Zone } from "@/mocks/grids";
+import { maxOf, priceOf, type Zone } from "@/lib/zonePolicy";
+import { getGridById, zoneLabel } from "@/mocks/grids";
 
 const ZONE_TONE: Record<Zone, "accent" | "turf" | "neutral"> = {
   signature: "accent",
@@ -29,7 +30,9 @@ export default async function GridDetailPage({
   const grid = getGridById(gridId);
   if (!grid) notFound();
 
-  const remain = grid.slotsTotal - grid.slotsTaken;
+  const cap = maxOf(grid.zone);
+  const price = priceOf(grid.zone);
+  const remain = cap - grid.slotsTaken;
   const full = remain <= 0;
 
   return (
@@ -54,7 +57,7 @@ export default async function GridDetailPage({
           <MapPin size={12} /> {zoneLabel(grid.zone)}
         </Badge>
         <Badge tone={full ? "neutral" : "turf"}>
-          <Users size={12} /> 잔여 {Math.max(0, remain)}/{grid.slotsTotal}
+          <Users size={12} /> 잔여 {Math.max(0, remain)}/{cap}
         </Badge>
       </div>
 
@@ -65,15 +68,17 @@ export default async function GridDetailPage({
       {/* 가격 + 슬롯 진행률 */}
       <Card>
         <div className="flex items-end justify-between">
-          <span className="text-sm text-ink-mid">반기 입양가</span>
+          <span className="text-sm text-ink-mid">
+            반기 입양가 · {zoneLabel(grid.zone)}
+          </span>
           <span className="font-display text-2xl font-extrabold text-accent">
-            {formatKRW(grid.priceKRW)}
+            {formatKRW(price)}
           </span>
         </div>
         <div className="mt-3">
-          <ProgressBar value={(grid.slotsTaken / grid.slotsTotal) * 100} />
+          <ProgressBar value={(grid.slotsTaken / cap) * 100} />
           <p className="mt-1 text-xs text-ink-mid">
-            4인 쿼터 중 {grid.slotsTaken}명 참여
+            정원 {cap}명 중 {grid.slotsTaken}명 참여
           </p>
         </div>
       </Card>
@@ -106,14 +111,15 @@ export default async function GridDetailPage({
         )}
       </div>
 
-      {/* 4인 쿼터제 안내 */}
+      {/* 개인/그룹 점유 안내 */}
       <Card className="flex items-start gap-2">
         <ShieldCheck size={18} className="mt-0.5 shrink-0 text-turf-300" />
         <div>
-          <p className="text-sm font-semibold text-ink-high">4인 쿼터제</p>
+          <p className="text-sm font-semibold text-ink-high">개인 또는 그룹 입양</p>
           <p className="text-xs text-ink-mid">
-            한 격자는 최대 4인이 함께 입양합니다. 독점을 막고 더 많은 팬이 명장면을
-            나눠 갖도록 설계되었습니다.
+            개인(1인) 또는 그룹({cap === 2 ? "2명" : `2~${cap}인`})으로 선택할 수
+            있어요. {zoneLabel(grid.zone)}은 정원 {cap}명 · {formatKRW(price)}이며,
+            독점을 막고 더 많은 팬이 명장면을 나눠 갖도록 설계되었습니다.
           </p>
         </div>
       </Card>

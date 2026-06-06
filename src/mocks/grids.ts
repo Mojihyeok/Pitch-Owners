@@ -1,7 +1,10 @@
 // 그라운드 맵 mock 데이터 — 442 격자(데모 22행 × 20열 = 440).
 // 모든 값은 id 기반 deterministic 생성 → SSR/CSR 일치.
+// 가격·정원은 mock에 저장하지 않고 zonePolicy(priceOf/maxOf)에서 파생.
 
-export type Zone = "signature" | "dynamic" | "basic";
+import { maxOf, type Zone } from "@/lib/zonePolicy";
+
+export type { Zone };
 
 export interface GridHighlight {
   matchLabel: string; // '24R vs 울산'
@@ -19,9 +22,8 @@ export interface Grid {
   row: number; // 0-indexed (세로, 골→골)
   col: number; // 1-indexed (가로, 너비)
   zone: Zone;
-  priceKRW: number; // 60000 ~ 400000 / 반기
-  slotsTotal: 4;
-  slotsTaken: number; // 0~4
+  // 가격·정원은 zonePolicy에서 파생(priceOf/maxOf). mock엔 점유 현황만.
+  slotsTaken: number; // 0 ~ maxOf(zone)
   highlights: GridHighlight[];
   ownedByMe?: boolean; // 런타임(store)에서 주입
   crewMembers?: CrewMember[];
@@ -66,11 +68,6 @@ function zoneFor(row: number, col: number): Zone {
   return "dynamic";
 }
 
-const PRICE_RANGE: Record<Zone, [number, number]> = {
-  signature: [250000, 400000],
-  dynamic: [120000, 220000],
-  basic: [60000, 110000],
-};
 
 const MATCH_LABELS = [
   "24R vs 울산",
@@ -125,19 +122,15 @@ function buildCrew(id: string): CrewMember[] {
 function buildGrid(row: number, col: number): Grid {
   const id = `${ROW_LETTERS[row]}-${col}`;
   const zone = zoneFor(row, col);
-  const [lo, hi] = PRICE_RANGE[zone];
-  const pr = hash01(id + "price");
-  // 1만원 단위로 반올림.
-  const priceKRW = Math.round((lo + pr * (hi - lo)) / 10000) * 10000;
-  const slotsTaken = Math.floor(hash01(id + "slot") * 5); // 0~4
+  // 점유는 0 ~ Zone 정원(maxOf). 가격·정원은 zonePolicy에서 파생.
+  const cap = maxOf(zone);
+  const slotsTaken = Math.floor(hash01(id + "slot") * (cap + 1)); // 0~cap
 
   return {
     id,
     row,
     col,
     zone,
-    priceKRW,
-    slotsTotal: 4,
     slotsTaken,
     highlights: buildHighlights(id, zone),
     crewMembers: buildCrew(id),
@@ -165,7 +158,7 @@ export function recommendGrids(excludeIds: string[], limit = 6): Grid[] {
   return GRIDS.filter(
     (g) =>
       !excludeIds.includes(g.id) &&
-      g.slotsTaken < g.slotsTotal &&
+      g.slotsTaken < maxOf(g.zone) &&
       g.zone !== "basic",
   )
     .sort((a, b) => b.highlights.length - a.highlights.length)

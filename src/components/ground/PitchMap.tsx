@@ -1,12 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  GRID_COLS,
-  GRID_ROWS,
-  type Grid,
-  type Zone,
-} from "@/mocks/grids";
+import { maxOf, type Zone } from "@/lib/zonePolicy";
+import { GRID_COLS, GRID_ROWS, type Grid } from "@/mocks/grids";
 
 const CELL = 10; // viewBox 단위
 const GAP = 1.4;
@@ -57,7 +53,7 @@ export function PitchMap({
           const x = (g.col - 1) * CELL + GAP / 2;
           const y = g.row * CELL + GAP / 2;
           const size = CELL - GAP;
-          const full = g.slotsTaken >= g.slotsTotal;
+          const full = g.slotsTaken >= maxOf(g.zone);
           const mine = ownedIds.includes(g.id);
           const selected = g.id === selectedId;
 

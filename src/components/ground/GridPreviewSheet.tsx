@@ -6,7 +6,8 @@ import { Sheet } from "@/components/ui/Sheet";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { formatKRW, cn } from "@/lib/utils";
-import { zoneLabel, type Grid, type Zone } from "@/mocks/grids";
+import { maxOf, priceOf, type Zone } from "@/lib/zonePolicy";
+import { zoneLabel, type Grid } from "@/mocks/grids";
 
 const ZONE_TONE: Record<Zone, "accent" | "turf" | "neutral"> = {
   signature: "accent",
@@ -23,7 +24,8 @@ interface GridPreviewSheetProps {
 export function GridPreviewSheet({ grid, onClose }: GridPreviewSheetProps) {
   const router = useRouter();
   const open = grid !== null;
-  const full = grid ? grid.slotsTaken >= grid.slotsTotal : false;
+  const cap = grid ? maxOf(grid.zone) : 0;
+  const full = grid ? grid.slotsTaken >= cap : false;
 
   return (
     <Sheet open={open} onClose={onClose} title={grid ? `격자 ${grid.id}` : ""}>
@@ -40,8 +42,7 @@ export function GridPreviewSheet({ grid, onClose }: GridPreviewSheetProps) {
               </Badge>
             ) : (
               <Badge tone="turf">
-                <Users size={12} /> 잔여 {grid.slotsTotal - grid.slotsTaken}/
-                {grid.slotsTotal}
+                <Users size={12} /> 잔여 {cap - grid.slotsTaken}/{cap}
               </Badge>
             )}
           </div>
@@ -50,7 +51,7 @@ export function GridPreviewSheet({ grid, onClose }: GridPreviewSheetProps) {
           <div className="flex items-end justify-between rounded-card bg-bg-surface p-4">
             <span className="text-sm text-ink-mid">반기 입양가</span>
             <span className="font-display text-2xl font-extrabold text-accent">
-              {formatKRW(grid.priceKRW)}
+              {formatKRW(priceOf(grid.zone))}
             </span>
           </div>
 
